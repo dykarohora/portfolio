@@ -1,5 +1,5 @@
 import P5 from 'p5'
-import { createRef, useEffect, useState, VFC } from 'react'
+import { useEffect, useRef, useState, VFC } from 'react'
 
 type Props = {
   sketch: (p: P5) => void
@@ -8,15 +8,18 @@ type Props = {
 export const Processing: VFC<Props> =
   ({ sketch }) => {
     const [, setInstance] = useState<P5>()
-    const wrapper = createRef<HTMLDivElement>()
+    const refDiv = useRef(null)
 
     useEffect(
       () => {
-        if (wrapper.current === null) return
-        setInstance(new P5(sketch, wrapper.current))
+        if (refDiv.current === null) {
+          return
+        }
+
+        setInstance(new P5(sketch, refDiv.current))
       },
       [sketch],
     )
 
-    return <div ref={wrapper} />
+    return <div ref={refDiv} />
   }
